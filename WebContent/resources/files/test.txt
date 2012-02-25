@@ -1,0 +1,5 @@
+这里是保存上传文件的文件夹
+
+在struts的action里配置过
+
+如果整合spring的话，可以在spring中配置

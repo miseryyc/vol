@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.vol.entity">
+	<class name="RunValidator" table="t_run_validator">
+	    <id name="id">
+	    	<generator class="native"/>
+	    </id>
+	    <property name="userId" column="user_id"/>
+	    <property name="runTime" column="run_time"/>
+	    <property name="outputPath" column="out_put_path"/>
+    </class>
+</hibernate-mapping>

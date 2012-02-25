@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+ xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:aop="http://www.springframework.org/schema/aop"
+ xmlns:tx="http://www.springframework.org/schema/tx"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                    http://www.springframework.org/schema/context
+                    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                    http://www.springframework.org/schema/aop
+                    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+                    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+                    ">
+
+		<bean id="propetyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		  <property name="locations">
+		   <list>
+		   	<value>
+		   		classpath:jdbc.properties
+		   	</value>
+		   </list>
+		  </property>
+		  <property name="ignoreUnresolvablePlaceholders" value="true" />
+		</bean>
+		
+		<!-- 配置数据源 -->
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" >
+		  <property name="driverClassName" value="${driverClassName}"/>
+		  <property name="url" value="${url}"/>
+		  <property name="username" value="${username}"/>
+		  <property name="password" value="${password}"/>
+		</bean>
+		
+		<!-- 配置SessionFactory -->
+		<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		  <property name="dataSource" ref="dataSource"/>
+		  <property name="configLocation" value="classpath:hibernate.cfg.xml"/>		  
+		</bean>
+		
+		<!-- 配置管理设置 -->
+		<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+			<property name="dataSource" ref="dataSource"/>
+			<property name="sessionFactory" >  
+            	<ref local="sessionFactory"/>
+        	</property>	
+		</bean>
+		
+		<!--  缓存管理  -->  
+	   <bean id="cacheManager"  
+	       class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+	       <property name="configLocation">  
+	           <value>classpath:ehcache.xml</value>  
+	       </property>  
+	   </bean> 
+		
+		<!-- 资源配置 -->
+		<bean id="configProperties" 
+			class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+			<property name="location" value="classpath:resConfig.properties"/>
+		</bean>
+		
+		<bean id="propertyConfigurer"
+			class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+			<property name="properties" ref="configProperties"/>
+			<property name="ignoreUnresolvablePlaceholders" value="true" />
+		</bean>
+		
+		<bean id="fileUploadPath" 
+			class="com.vol.beans.FileUploadPath">
+			<property name="path" value="${FILE_UPLOAD_PATH}"/>
+		</bean>
+		
+		<!-- Bean配置 -->
+		
+		<!-- Service配置 -->
+		<bean name="userService" class="com.vol.service.impl.UserServiceImpl" scope="prototype">
+		  <property name="userDAO">
+		   <ref bean="userDAO"/>
+		  </property>
+		</bean>
+		
+		<bean name="runValidatorService" class="com.vol.service.impl.RunValidatorServiceImpl" scope="prototype">
+		  <property name="fileUploadDAO">
+		   <ref bean="fileUploadDAO"/>
+		  </property>
+		  <property name="runValidatorDAO">
+		   <ref bean="runValidatorDAO"/>
+		  </property>
+		  <property name="userDAO">
+		   <ref bean="userDAO"/>
+		  </property>
+		</bean>
+		
+		<!-- DAO配置 -->
+		<bean name="userDAO" class="com.vol.dao.impl.UserDAO" scope="prototype">
+		  <property name="sessionFactory">
+		   <ref bean="sessionFactory"/>
+		  </property>
+		</bean>
+		
+		<bean name="fileUploadDAO" class="com.vol.dao.impl.FileUploadDAO" scope="prototype">
+		  <property name="sessionFactory">
+		   <ref bean="sessionFactory"/>
+		  </property>
+		</bean>
+		
+		<bean name="runValidatorDAO" class="com.vol.dao.impl.RunValidatorDAO" scope="prototype">
+		  <property name="sessionFactory">
+		   <ref bean="sessionFactory"/>
+		  </property>
+		</bean>
+		
+		<!-- Action配置 -->
+		<bean name="runValidator" class="com.vol.action.FileUploadAction" scope="prototype">
+		  <property name="runValidatorService">
+		   <ref bean="runValidatorService"/>
+		  </property>
+		</bean>
+		<bean name="userAction" class="com.vol.action.UserAction" scope="prototype">
+		  <property name="userService">
+		   <ref bean="userService"/>
+		  </property>
+		</bean>
+		<bean name="downloadAction" class="com.vol.action.FileDownloadAction" scope="prototype">
+		  <property name="runValidatorService">
+		   <ref bean="runValidatorService"/>
+		  </property>
+		</bean>
+</beans>

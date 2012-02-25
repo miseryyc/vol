@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package namespace="" name="struts2" extends="json-default">
+		<action name="reg" method="saveUser" class="userAction">
+		</action> 
+		<action name="fileUpload" method="upload" class="com.vol.action.FileUploadAction">
+			<result name="success">regSuc.jsp</result>
+			<result name="error">regFail.jsp</result>
+		</action>
+		<action name="submit" method="submit" class="runValidator">
+			<result name="success">upload.jsp</result>
+			<result name="error">uploadFail.jsp</result>
+		</action>
+		<action name="getValidator" method="getValidatorLog" class="runValidator">
+		</action> 
+		<action name="checkUser" method="checkUser" class="userAction">
+		</action> 
+		<action name="login" method="login" class="userAction">
+		</action>
+		<action name="getFiles" method="getDownloadFiles" class="downloadAction">
+		</action>
+		<action name="download" method="downloadFiles" class="downloadAction">
+		</action>
+	</package>
+</struts>
